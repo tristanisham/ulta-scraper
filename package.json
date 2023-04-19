@@ -1,0 +1,29 @@
+{
+  "name": "iris",
+  "version": "0.0.1",
+  "description": "",
+  "main": "./dist/main.js",
+  "bin": "iris",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "tsc --watch",
+    "build": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^18.15.11",
+    "playwright": "^1.32.3",
+    "typescript": "^5.0.4"
+  },
+  "dependencies": {
+    "playwright-extra": "^4.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2",
+    "sqlite": "^4.1.2",
+    "sqlite3": "^5.1.6"
+  },
+  "engines": {
+    "node": ">= 19.8.1"
+  }
+}
