@@ -52,19 +52,23 @@ function help() {
 export async function* loadProducts(browser: Browser, prodPages: string[]): AsyncGenerator<Product> {
     urls: for (let i = 0; i < prodPages.length; i++) {
         const url = new URL(prodPages[i]);
-        let keepScanning = true;
         // const ProdDb: Product[] = []
 
         const page = await browser.newPage()
-        products: for (let pnum = 1; keepScanning; i++) {
+        await page.goto(url.toString(), { waitUntil: "load" })
+
+        products: for (let pnum = 1; true; i++) {
             console.log(`Scanning ${url.toString()}...`)
-            await page.goto(url.toString(), { waitUntil: "load" })
+
             await page.waitForLoadState("domcontentloaded")
             await page.waitForTimeout(500)
             await page.waitForSelector(".ProductListingWrapper__resultslabel")
             await page.waitForSelector(".ProductCard")
+
             const products = await page.locator(".ProductCard").all();
+            if (prodPages.length == 0) continue urls
             for (let n = 0; n < products.length; n++) {
+
                 const product = products[n]
                 // Product Name
                 const name = product.locator(".ProductCard__product");
@@ -81,19 +85,19 @@ export async function* loadProducts(browser: Browser, prodPages: string[]): Asyn
                 await product.click()
                 console.log(`Moved to ${product.page().url()}`)
                 try {
-                    const content = await page.waitForSelector(`.ProductDetail__Content`)
-                    out.ingrediants = await ingredients(content)
+                    await page.waitForSelector(`.ProductDetail__Content`)
+                    out.ingrediants = await ingredients(page)
 
                     out.images = await images(page.locator(".ProductHero__content"))
                 } catch (e: any) {
                     if (e.name == "TimeoutError") {
-                        console.log("Page timedout, logging and moving on")
+                        console.log("Page timed out. Logging and moving on")
                         console.log(page.url())
                     }
                 }
 
                 await page.goBack()
-                console.log(`Moved to ${product.page().url()}`)
+                console.log(`Went back to ${product.page().url()}`)
                 await page.waitForSelector(".ProductCard")
                 yield out;
             }

@@ -5,8 +5,9 @@ import fs from "node:fs/promises";
 import { loadProducts, parse } from "./cli"
 import StealthPlugin from 'puppeteer-extra-plugin-stealth'
 import process from "node:process";
+import pc from "picocolors"
 
-const ProductURLs = [
+const ProductPageURLs = [
     "https://www.ulta.com/shop/makeup/all?sort=price_asc",
     "https://www.ulta.com/shop/skin-care/all?sort=price_asc",
     "https://www.ulta.com/shop/fragrance/all?sort=price_asc",
@@ -30,8 +31,9 @@ const ProductURLs = [
     const browser = await chromium.use(StealthPlugin()).launch({ headless: args.headless });
 
 
-    for await (const product of loadProducts(browser, ProductURLs)) {
+    for await (const product of loadProducts(browser, ProductPageURLs)) {
         await db.run("INSERT INTO products (name, brand, price, ingrediants, images) VALUES (?,?,?,?,?)", [product.name, product.brand, product.price, product.ingrediants, product.images?.join(";")])
+        console.log(pc.green(`Saved ${product.name}`)   )
     }
     await browser.close();
 })();

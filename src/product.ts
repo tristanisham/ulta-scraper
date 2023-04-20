@@ -25,12 +25,20 @@ export async function price(elem: Locator): Promise<string> {
  * @param elem Parent content element for products
  * @returns A string array of all ingredients or undefined if no ingredients are found.
  */
-export async function ingredients(elem: ElementHandle<SVGElement | HTMLElement>): Promise<string[] | undefined> {
-    if (await elem.$(".Ingredients") === null) return Promise.resolve(undefined)
-    const md_bodies = await elem.$$(".Markdown--body-2")
-    if (md_bodies.length === 0) return Promise.resolve(undefined);
-
-    return Promise.resolve((await ingrediant_sifter(md_bodies)).split(","))
+export async function ingredients(elem: Page): Promise<string[] | undefined> {
+    if (elem.locator(".ProductDetail__Content") === null) return Promise.resolve(undefined)
+    const ingred = await elem.locator("details").all();
+    for (const ing of ingred) {
+        if (await ing.innerText() == "Ingredients") {
+            await ing.click();
+            const md_bodies = await ing.locator("p").allInnerTexts()
+            if (md_bodies.length === 0) return Promise.resolve(undefined);
+        
+            return Promise.resolve((await ingrediant_sifter(md_bodies)).split(","))
+        }
+    }
+    if (!ingred) return Promise.resolve(undefined)
+    
 }
 
 /**
@@ -39,15 +47,16 @@ export async function ingredients(elem: ElementHandle<SVGElement | HTMLElement>)
  *
  * @param copy List of possible ingrediant elements
  */
-async function ingrediant_sifter(copy: ElementHandle<SVGElement | HTMLElement>[]): Promise<string> {
+async function ingrediant_sifter(copy: string[]): Promise<string> {
     let sift: { ratio: number, cp: string } = {
         ratio: 0,
         cp: ""
     };
 
-    for (const body of copy) {
-        const ct = await body.textContent()
-        if (!ct) continue;
+    for (const ct of copy) {
+        
+        if (!ct || ct.length === 0) continue;
+        console.log(ct)
         const spaces = ct.trim().split(" ")
         const commas = ct.trim().split(",")
         const ratio = commas.length / spaces.length;
@@ -60,7 +69,6 @@ async function ingrediant_sifter(copy: ElementHandle<SVGElement | HTMLElement>[]
 
         }
     }
-
 
     return Promise.resolve(sift.cp)
 }
