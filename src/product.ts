@@ -1,4 +1,4 @@
-import { ElementHandle, Locator, Page } from "playwright";
+import { Locator, Page } from "playwright";
 
 export interface Product {
     id?: number
@@ -33,12 +33,12 @@ export async function ingredients(elem: Page): Promise<string[] | undefined> {
             await ing.click();
             const md_bodies = await ing.locator("p").allInnerTexts()
             if (md_bodies.length === 0) return Promise.resolve(undefined);
-        
+
             return Promise.resolve((await ingrediant_sifter(md_bodies)).split(","))
         }
     }
     if (!ingred) return Promise.resolve(undefined)
-    
+
 }
 
 /**
@@ -54,7 +54,7 @@ async function ingrediant_sifter(copy: string[]): Promise<string> {
     };
 
     for (const ct of copy) {
-        
+
         if (!ct || ct.length === 0) continue;
         console.log(ct)
         const spaces = ct.trim().split(" ")
@@ -70,11 +70,11 @@ async function ingrediant_sifter(copy: string[]): Promise<string> {
         }
     }
 
-    return Promise.resolve(sift.cp)
+    return Promise.resolve(sift.cp.trim())
 }
 
 
-export async function images(elem:Locator): Promise<string[]> {
+export async function images(elem: Locator): Promise<string[]> {
     const images = await elem.locator("img").all()
     const image_urls: string[] = []
     for (const image of images) {

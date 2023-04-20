@@ -31,7 +31,7 @@ export function parse(args: string[]): Args {
 }
 
 function help() {
-    console.table([
+    console.log([
         {
             "Command": "help",
             "Description": "Print these instructions",
@@ -104,6 +104,6 @@ export async function* loadProducts(browser: Browser, prodPages: string[]): Asyn
             url.searchParams.set("page", String(pnum))
         }
 
-        await page.close();
     }
+
 }
