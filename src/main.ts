@@ -23,7 +23,7 @@ const ProductPageURLs = [
 // Main
 (async () => {
     const args = parse(process.argv.slice(2))
-    fs.mkdir("./data", { recursive: true }).catch(_ => console.info("Skipping data directory creation."))
+    await fs.mkdir("./data", { recursive: true })
     const db = await open({
         filename: "./data/ulta.db",
         driver: sqlite3.Database

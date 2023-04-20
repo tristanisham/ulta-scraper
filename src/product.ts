@@ -56,7 +56,6 @@ async function ingrediant_sifter(copy: string[]): Promise<string> {
     for (const ct of copy) {
 
         if (!ct || ct.length === 0) continue;
-        console.log(ct)
         const spaces = ct.trim().split(" ")
         const commas = ct.trim().split(",")
         const ratio = commas.length / spaces.length;
