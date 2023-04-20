@@ -40,7 +40,7 @@ const ProductPageURLs = [
         chromium.use(RecaptchaPlugin({
             provider: {
               id: '2captcha',
-              token: 'ENTER_YOUR_2CAPTCHA_API_KEY_HERE'
+              token: process.env.TWOCAPTCHA_API_KEY
             }
           }))
     }
