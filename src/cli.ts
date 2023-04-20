@@ -3,7 +3,8 @@ import { Browser } from "playwright";
 import { Product, images, ingredients, price } from "./product";
 
 interface Args {
-    headless: boolean
+    headless: boolean,
+    captcha: boolean
 }
 
 /**
@@ -13,7 +14,8 @@ interface Args {
  */
 export function parse(args: string[]): Args {
     let out: Args = {
-        headless: true
+        headless: true,
+        captcha: false
     };
 
     for (let i = 0; i < args.length; i++) {
@@ -24,6 +26,8 @@ export function parse(args: string[]): Args {
             case "-h": case "--help": case "help":
                 help();
                 process.exit(0)
+            case "--captcha":
+                out.captcha = true;
         }
     }
 
@@ -40,6 +44,10 @@ function help() {
         {
             "Flag": "--head",
             "Description": "Open the browser with a head. Helpful for debuging or sightseeing."
+        },
+        {
+            "Flag": "--captcha",
+            "Description": "Enable captcha solver"
         }
     ]);
 }
@@ -56,10 +64,12 @@ export async function* loadProducts(browser: Browser, prodPages: string[]): Asyn
 
         const page = await browser.newPage()
         await page.goto(url.toString(), { waitUntil: "load" })
+        if (typeof page.solveRecaptchas === "function") {
+            await page.solveRecaptchas();
+        }
 
         products: for (let pnum = 1; true; i++) {
             console.log(`Scanning ${url.toString()}...`)
-
             await page.waitForLoadState("domcontentloaded")
             await page.waitForTimeout(500)
             await page.waitForSelector(".ProductListingWrapper__resultslabel")
