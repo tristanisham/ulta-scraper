@@ -34,7 +34,7 @@ const ProductPageURLs = [
     chromium.use(StealthPlugin())
     if (args.captcha) {
         if (!process.env.TWOCAPTCHA_API_KEY) {
-            console.error(pc.yellow(`Captcha solver enabled but no 2captcha.com api key found. Checked ENV ${pc.underline("2CAPTCHA_API_KEY")}`))
+            console.error(pc.yellow(`Captcha solver enabled but no 2captcha.com api key found. Checked ENV ${pc.underline("TWOCAPTCHA_API_KEY")}`))
             process.exit(1)
         }
         chromium.use(RecaptchaPlugin({
