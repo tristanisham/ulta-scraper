@@ -1,4 +1,4 @@
-# Tristan's Newness Take Home Project
+# Ulta Scraper
 
 A web-scraper for https://ulta.com collecting:
 
